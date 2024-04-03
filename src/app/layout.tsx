@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import React from "react";
+import type { Metadata } from 'next';
+import { Roboto, Work_Sans } from 'next/font/google';
+import './globals.css';
+import React from 'react';
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({ subsets: ['cyrillic'], display: 'swap', weight: ['400', '500', '700'] });
+const work_sans = Work_Sans({ subsets: ['latin'], display: 'swap', weight: '700' })
 
 export const metadata: Metadata = {
   title: "Currency exchanger",
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={roboto.className}>{children}</body>
     </html>
   );
 }
