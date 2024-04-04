@@ -16,7 +16,7 @@ const Navigation: FC<INavigationProps> = ({ routes, variant }): ReactElement => 
     return (
         <nav>
             <ul className={clsx('text-primary font-medium', {'flex gap-x-14 font-normal': variant === 'horizontal'})}>
-                {routes.map(({ title, path }) => <li key={title}>
+                {routes.map(({ title, path }) => <li key={title} className={clsx({'mb-1': variant !== 'horizontal'})}>
                     <Link href={path} className={clsx({'text-blue': path === pathname})}>{title}</Link>
                 </li>)}
             </ul>
