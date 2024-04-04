@@ -3,6 +3,7 @@ import './globals.css';
 import React from 'react';
 import Header from "@/components/Header";
 import { roboto } from "@/app/fonts";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Currency exchanger",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className={`${roboto.className} w-full h-screen flex flex-col`}>
         <Header />
         <main className='flex-auto'>{children}</main>
+        <Footer />
       </body>
     </html>
   );
