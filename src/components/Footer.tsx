@@ -22,7 +22,7 @@ const Footer: FC = (): ReactElement => {
                         <Icons.phone />
                         <Link href='tel:3773' className='font-medium'>3773</Link>
                     </span>
-                    <p className='text-xs text-primary mt-2.5 pl-4'>Цілодобова підтримка</p>
+                    <p className='text-xs text-primary mt-2.5 pl-7'>Цілодобова підтримка</p>
                 </div>
                 <div className='max-w-[180px]'>
                     <span className='flex items-center gap-x-3'>
