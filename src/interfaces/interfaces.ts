@@ -13,3 +13,11 @@ export interface HistoryData {
     amountToSell: string
     amountToBuy: string
 }
+
+export interface RatesResponseItem {
+    r030: number
+    txt: string
+    rate: number
+    cc: string
+    exchangedate: string
+}
