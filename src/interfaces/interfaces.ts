@@ -32,3 +32,11 @@ export interface initialStore {
     addToHistory: (item: HistoryItem) => void
     clearHistory: () => void,
 }
+
+export interface IForm {
+    date: string,
+    currencyToSell: string,
+    currencyToBuy: string,
+    amountToSell: string,
+    amountToBuy: string,
+}

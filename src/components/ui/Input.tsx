@@ -10,13 +10,15 @@ interface InputProps {
   type: string,
   value: string
   step?: string
+  min?: string
+  max?: string
 }
 
 const Input: FC<InputProps> = ({ label, id, handler, ...attrs }) => {
   return (
     <div className='relative'>
       <label htmlFor={id} className='absolute -top-[30px] text-xl text-primary'>{label}</label>
-      <input id={id} {...attrs} min={0} onChange={handler}/>
+      <input id={id} {...attrs} onChange={handler}/>
     </div>
   );
 };

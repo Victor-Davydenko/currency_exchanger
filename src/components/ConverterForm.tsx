@@ -1,42 +1,40 @@
 'use client'
 
 import React, {ChangeEvent, useEffect, useState} from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button';
 import useConverterStore from '@/store/store';
-import {getCurrentDate, removeDashesFromDateString, reverseDate} from '@/utils/utils';
+import {getCurrentDate, getMaxAndMinDate, removeDashesFromDateString, reverseDate} from '@/utils/utils';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {getRates} from "@/http";
-import {ISelectOption, RatesResponseItem} from '@/interfaces/interfaces';
+import {ISelectOption, RatesResponseItem, IForm} from '@/interfaces/interfaces';
 import {addToHistorySelector} from '@/store/selectors';
+import {converterFormValidationSchema} from "@/validation/converterFormValidationSchema";
 
-interface IFormState {
-  date: string,
-  currencyToSell: string,
-  currencyToBuy: string,
-  amountToSell: string,
-  amountToBuy: string,
-}
+const { maxDate, minDateString } = getMaxAndMinDate(10)
 const ConverterForm = () => {
   const addToHistory = useConverterStore(addToHistorySelector)
   const [rate, setRate] = useState(1)
   const [rates, setRates] = useState<RatesResponseItem[]>([])
 
-  const {control, handleSubmit, watch, setValue} = useForm<IFormState>({
+  const {control, handleSubmit, watch, setValue} = useForm<IForm>({
     defaultValues: {
       date: getCurrentDate(),
       amountToSell: '0',
       amountToBuy: '0',
       currencyToSell: 'UAH',
       currencyToBuy: 'UAH'
-    }
+    },
+    resolver: zodResolver(converterFormValidationSchema)
   })
-
+  
   const date = watch('date')
   const currencyToSell = watch('currencyToSell')
   const currencyToBuy = watch('currencyToBuy')
   const amountToSell = watch('amountToSell')
+  const isValid = converterFormValidationSchema.safeParse(watch()).success
 
   const availableCurrencies: ISelectOption[] = [{value: 'UAH', label: 'UAH'}, ...rates.map((currency) => ({value: currency.cc, label: currency.cc}))]
 
@@ -70,7 +68,7 @@ const ConverterForm = () => {
     setValue('amountToBuy', e.target.value)
     setValue('amountToSell', (+e.target.value / rate).toFixed(2))
   }
-  const onFormSubmit: SubmitHandler<IFormState> = (formData) => {
+  const onFormSubmit: SubmitHandler<IForm> = (formData) => {
     addToHistory({
       date: reverseDate(formData.date),
       amountToSell: `${formData.amountToSell} ${formData.currencyToSell}`,
@@ -88,6 +86,7 @@ const ConverterForm = () => {
             id='amountToSell'
             type='number'
             step='any'
+            min='0'
             className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
             label='В мене є:'
             value={value}
@@ -110,6 +109,8 @@ const ConverterForm = () => {
           render={({ field: {value, onChange} }) => <Input
             type='date'
             id='date'
+            min={minDateString}
+            max={maxDate}
             label={''}
             value={value}
             className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
@@ -123,6 +124,7 @@ const ConverterForm = () => {
           control={control}
           render={({ field: {value} }) => <Input
             step='any'
+            min='0'
             value={value}
             id='amountToBuy'
             type='number'
@@ -140,7 +142,7 @@ const ConverterForm = () => {
             handler={onChange} value={value}
           />}
         />
-        <Button variant='small-blue'>Зберегти результат</Button>
+        <Button variant={`${isValid ? 'small-blue': 'disabled'}`}>Зберегти результат</Button>
       </div>
     </form>
   );
