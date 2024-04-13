@@ -21,3 +21,14 @@ export interface RatesResponseItem {
     cc: string
     exchangedate: string
 }
+
+export interface HistoryItem {
+    date: string,
+    amountToSell: string,
+    amountToBuy: string
+}
+export interface initialStore {
+    history: HistoryItem[]
+    addToHistory: (item: HistoryItem) => void
+    clearHistory: () => void,
+}

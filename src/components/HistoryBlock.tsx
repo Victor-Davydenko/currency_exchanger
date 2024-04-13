@@ -5,11 +5,12 @@ import Title from '@/components/common/Title';
 import Button from '@/components/ui/Button';
 import History from '@/components/History';
 import {HistoryData} from '@/interfaces/interfaces';
-import useConverterStore from "@/store/store";
+import useConverterStore from '@/store/store';
+import {clearHistorySelector, historySelector} from '@/store/selectors';
 
 const HistoryBlock: FC = () => {
-  const history: HistoryData[] = useConverterStore(state => state.history)
-  const clearHistory = useConverterStore(state => state.clearHistory)
+  const history: HistoryData[] = useConverterStore(historySelector)
+  const clearHistory = useConverterStore(clearHistorySelector)
   return (
     <section className='bg-white'>
       <div className='container mx-auto max-w-[1000px] flex py-[80px] px-5'>
