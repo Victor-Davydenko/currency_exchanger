@@ -11,7 +11,7 @@ import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {getRates} from "@/http";
 import {ISelectOption, RatesResponseItem, IForm} from '@/interfaces/interfaces';
 import {addToHistorySelector} from '@/store/selectors';
-import {converterFormValidationSchema} from "@/validation/converterFormValidationSchema";
+import {converterFormValidationSchema} from '@/validation/converterFormValidationSchema';
 
 const { maxDate, minDateString } = getMaxAndMinDate(10)
 const ConverterForm = () => {
@@ -29,7 +29,7 @@ const ConverterForm = () => {
     },
     resolver: zodResolver(converterFormValidationSchema)
   })
-  
+
   const date = watch('date')
   const currencyToSell = watch('currencyToSell')
   const currencyToBuy = watch('currencyToBuy')
