@@ -1,54 +1,146 @@
 'use client'
 
-import React, {ChangeEvent, FormEvent} from 'react';
+import React, {ChangeEvent, useEffect, useState} from 'react';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button';
 import useConverterStore from '@/store/store';
-import {reverseDate} from '@/utils/utils';
-import {useConverter} from '@/hooks';
+import {getCurrentDate, removeDashesFromDateString, reverseDate} from '@/utils/utils';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
+import {getRates} from "@/http";
+import {ISelectOption, RatesResponseItem} from '@/interfaces/interfaces';
+import {addToHistorySelector} from '@/store/selectors';
 
+interface IFormState {
+  date: string,
+  currencyToSell: string,
+  currencyToBuy: string,
+  amountToSell: string,
+  amountToBuy: string,
+}
 const ConverterForm = () => {
-  const { formState, availableCurrencies, setFormState } = useConverter()
-  const addToHistory = useConverterStore((state) => state.addToHistory)
-  const selectHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
+  const addToHistory = useConverterStore(addToHistorySelector)
+  const [rate, setRate] = useState(1)
+  const [rates, setRates] = useState<RatesResponseItem[]>([])
+
+  const {control, handleSubmit, watch, setValue} = useForm<IFormState>({
+    defaultValues: {
+      date: getCurrentDate(),
+      amountToSell: '0',
+      amountToBuy: '0',
+      currencyToSell: 'UAH',
+      currencyToBuy: 'UAH'
+    }
+  })
+
+  const date = watch('date')
+  const currencyToSell = watch('currencyToSell')
+  const currencyToBuy = watch('currencyToBuy')
+  const amountToSell = watch('amountToSell')
+
+  const availableCurrencies: ISelectOption[] = [{value: 'UAH', label: 'UAH'}, ...rates.map((currency) => ({value: currency.cc, label: currency.cc}))]
+
+  useEffect(() => {
+    const formattedDate = removeDashesFromDateString(date)
+    getRates(formattedDate)
+      .then((rates) => {
+        setRates(rates)
+        const currencyToSellRate = rates.find((currency) => currency.cc === currencyToSell)?.rate || 1
+        const currencyToBuyRate = rates.find((currency) => currency.cc === currencyToBuy)?.rate || 1
+        setRate(currencyToSellRate / currencyToBuyRate)
+      })
+  },[date])
+
+  useEffect(() => {
+    const currencyToSellRate = rates.find((currency) => currency.cc === currencyToSell)?.rate || 1
+    const currencyToBuyRate = rates.find((currency) => currency.cc === currencyToBuy)?.rate || 1
+    setRate(currencyToSellRate / currencyToBuyRate)
+  }, [currencyToSell, currencyToBuy])
+
+  useEffect(() => {
+    setValue('amountToBuy', (+amountToSell * rate).toFixed(2))
+  }, [rate]);
+
+  const handleAmountToSellInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue('amountToSell', e.target.value)
+    setValue('amountToBuy', (+e.target.value * rate).toFixed(2))
   }
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value
-    }))
+  const handleAmountToBuyInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue('amountToBuy', e.target.value)
+    setValue('amountToSell', (+e.target.value / rate).toFixed(2))
   }
-
-  const handleFormSubmit = (e: FormEvent) => {
-    e.preventDefault()
+  const onFormSubmit: SubmitHandler<IFormState> = (formData) => {
     addToHistory({
-      date: reverseDate(formState.date),
-      amountToSell: `${formState.amountToSell} ${formState.currencyToSell}`,
-      amountToBuy: `${formState.amountToBuy} ${formState.currencyToBuy}`
+      date: reverseDate(formData.date),
+      amountToSell: `${formData.amountToSell} ${formData.currencyToSell}`,
+      amountToBuy: `${formData.amountToBuy} ${formData.currencyToBuy}`
     })
   }
 
   return (
-    <form className='flex'>
+    <form className='flex' onSubmit={handleSubmit(onFormSubmit)}>
       <div className='basis-1/2 flex flex-wrap gap-x-4 gap-y-6'>
-        <Input id='amountToSell' type='number'
-               className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
-               label='В мене є:' handler={(e) => handleInput(e)} value={formState.amountToSell}/>
-        <Select options={availableCurrencies} name='currencyToSell' handler={(e) => selectHandler(e)} value={formState.currencyToSell} />
-        <Input type='date' id='date' label={''} handler={(e) => handleInput(e)} value={formState.date} className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'/>
+        <Controller
+          name='amountToSell'
+          control={control}
+          render={({ field: { value} }) => <Input
+            id='amountToSell'
+            type='number'
+            step='any'
+            className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
+            label='В мене є:'
+            value={value}
+            handler={handleAmountToSellInput}
+          />}
+        />
+        <Controller
+          name='currencyToSell'
+          control={control}
+          render={({ field: { value, onChange} }) => <Select
+            options={availableCurrencies}
+            value={value}
+            name='currencyToSell'
+            handler={onChange}
+          />}
+        />
+        <Controller
+          name='date'
+          control={control}
+          render={({ field: {value, onChange} }) => <Input
+            type='date'
+            id='date'
+            label={''}
+            value={value}
+            className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
+            handler={onChange}
+          />}
+        />
       </div>
       <div className='basis-1/2 flex flex-wrap gap-x-4 gap-y-6 last:justify-end'>
-        <Input id='amountToBuy' type='number'
-               className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
-               label='Хочу придбати:' handler={(e) => handleInput(e)}  value={formState.amountToBuy}/>
-        <Select options={availableCurrencies} name='currencyToBuy' handler={(e) => selectHandler(e)} value={formState.currencyToBuy}/>
-        <Button variant='small-blue' onClick={handleFormSubmit}>Зберегти результат</Button>
+        <Controller
+          name='amountToBuy'
+          control={control}
+          render={({ field: {value} }) => <Input
+            step='any'
+            value={value}
+            id='amountToBuy'
+            type='number'
+            className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
+            label='Хочу придбати:'
+            handler={handleAmountToBuyInput}
+          />}
+        />
+        <Controller
+          name='currencyToBuy'
+          control={control}
+          render={({ field: {value, onChange} }) => <Select
+            options={availableCurrencies}
+            name='currencyToBuy'
+            handler={onChange} value={value}
+          />}
+        />
+        <Button variant='small-blue'>Зберегти результат</Button>
       </div>
     </form>
   );
