@@ -1,7 +1,7 @@
 'use client'
 
 import React, {ChangeEvent, useEffect, useState} from 'react';
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button';
