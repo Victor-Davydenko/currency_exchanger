@@ -9,6 +9,7 @@ interface InputProps {
   id: string,
   type: string,
   value: string
+  step?: string
 }
 
 const Input: FC<InputProps> = ({ label, id, handler, ...attrs }) => {
