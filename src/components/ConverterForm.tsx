@@ -78,7 +78,8 @@ const ConverterForm = () => {
   }
 
   return (
-    <form className='flex' onSubmit={handleSubmit(onFormSubmit)}>
+    <form className='flex relative' onSubmit={handleSubmit(onFormSubmit)}>
+      <Icons.arrow_icon className='absolute left-1/2 transform -translate-x-1/2 w-[40px] h-[40px] top-2 z-10'></Icons.arrow_icon>
       <div className='basis-1/2 flex flex-wrap gap-x-4 gap-y-6'>
         <Controller
           name='amountToSell'
