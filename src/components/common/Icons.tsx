@@ -8,6 +8,7 @@ import youtube from '../../../public/icons/youtube.svg'
 import arrow_icon from '../../../public/icons/icon_arrows.svg'
 import arrow_down from '../../../public/icons/arrow_down.svg'
 import arrow from '../../../public/icons/arrow.svg'
+import calendar from '../../../public/icons/calendar_icon.svg'
 
 export const Icons = {
     login: loginIcon,
@@ -19,5 +20,6 @@ export const Icons = {
     youtube,
     arrow_icon,
     arrow_down,
-    arrow
+    arrow,
+    calendar
 }

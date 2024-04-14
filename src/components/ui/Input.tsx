@@ -1,6 +1,6 @@
 'use client'
 
-import React, {ChangeEvent, FC} from 'react';
+import React, {ChangeEvent, FC, ReactNode} from 'react';
 
 interface InputProps {
   label: string,
@@ -12,12 +12,14 @@ interface InputProps {
   step?: string
   min?: string
   max?: string
+  icon?: ReactNode
 }
 
-const Input: FC<InputProps> = ({ label, id, handler, ...attrs }) => {
+const Input: FC<InputProps> = ({ label, icon, id, handler, ...attrs }) => {
   return (
     <div className='relative'>
-      <label htmlFor={id} className='absolute -top-[30px] text-xl text-primary'>{label}</label>
+      {icon}
+      {label && <label htmlFor={id} className='absolute -top-[30px] text-xl text-primary'>{label}</label>}
       <input id={id} {...attrs} onChange={handler}/>
     </div>
   );

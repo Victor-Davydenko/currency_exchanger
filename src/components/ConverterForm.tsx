@@ -12,6 +12,7 @@ import {getRates} from "@/http";
 import {ISelectOption, RatesResponseItem, IForm} from '@/interfaces/interfaces';
 import {addToHistorySelector} from '@/store/selectors';
 import {converterFormValidationSchema} from '@/validation/converterFormValidationSchema';
+import {Icons} from "@/components/common/Icons";
 
 const { maxDate, minDateString } = getMaxAndMinDate(10)
 const ConverterForm = () => {
@@ -77,7 +78,8 @@ const ConverterForm = () => {
   }
 
   return (
-    <form className='flex' onSubmit={handleSubmit(onFormSubmit)}>
+    <form className='flex relative' onSubmit={handleSubmit(onFormSubmit)}>
+      <Icons.arrow_icon className='absolute left-1/2 transform -translate-x-1/2 w-[40px] h-[40px] top-2 z-10'></Icons.arrow_icon>
       <div className='basis-1/2 flex flex-wrap gap-x-4 gap-y-6'>
         <Controller
           name='amountToSell'
@@ -113,8 +115,9 @@ const ConverterForm = () => {
             max={maxDate}
             label={''}
             value={value}
-            className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
+            className='appearance-none outline outline-0 focus:outline-0 border-grey rounded border-[1px] h-[60px] w-[215px] text-center font-medium text-primary text-xl [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none  [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:w-[25px]'
             handler={onChange}
+            icon={<Icons.calendar className='absolute top-4 right-3 w-[25px] h-[25px]' />}
           />}
         />
       </div>
