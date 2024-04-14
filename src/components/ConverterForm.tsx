@@ -23,8 +23,8 @@ const ConverterForm = () => {
   const {control, handleSubmit, watch, setValue} = useForm<IForm>({
     defaultValues: {
       date: getCurrentDate(),
-      amountToSell: '0',
-      amountToBuy: '0',
+      amountToSell: '0.00',
+      amountToBuy: '0.00',
       currencyToSell: 'UAH',
       currencyToBuy: 'UAH'
     },
@@ -61,12 +61,12 @@ const ConverterForm = () => {
   }, [rate]);
 
   const handleAmountToSellInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue('amountToSell', e.target.value)
+    setValue('amountToSell', (+e.target.value).toFixed(2))
     setValue('amountToBuy', (+e.target.value * rate).toFixed(2))
   }
 
   const handleAmountToBuyInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue('amountToBuy', e.target.value)
+    setValue('amountToBuy', (+e.target.value).toFixed(2))
     setValue('amountToSell', (+e.target.value / rate).toFixed(2))
   }
   const onFormSubmit: SubmitHandler<IForm> = (formData) => {
