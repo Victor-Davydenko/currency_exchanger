@@ -13,3 +13,30 @@ export interface HistoryData {
     amountToSell: string
     amountToBuy: string
 }
+
+export interface RatesResponseItem {
+    r030: number
+    txt: string
+    rate: number
+    cc: string
+    exchangedate: string
+}
+
+export interface HistoryItem {
+    date: string,
+    amountToSell: string,
+    amountToBuy: string
+}
+export interface initialStore {
+    history: HistoryItem[]
+    addToHistory: (item: HistoryItem) => void
+    clearHistory: () => void,
+}
+
+export interface IForm {
+    date: string,
+    currencyToSell: string,
+    currencyToBuy: string,
+    amountToSell: string,
+    amountToBuy: string,
+}
