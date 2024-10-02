@@ -3,9 +3,10 @@ import Link from "next/link";
 
 interface ButtonProps {
     children: React.ReactNode;
-    variant: 'small-blue' | 'big-blue' | 'small-grey';
+    variant: 'small-blue' | 'big-blue' | 'small-grey' | 'disabled';
     onClick?: (e: MouseEvent<HTMLElement>) => void;
-    href?: string
+    href?: string,
+    disabled?: boolean
 }
 
 interface IButtonVariants {
@@ -16,7 +17,8 @@ const Button: FC<ButtonProps> = ({ children, variant, href, ...attrs }) => {
     const buttonVariants: IButtonVariants = {
         'big-blue': 'inline-block text-secondary font-medium text-lg text-center bg-blue p-4  min-w-[250px] rounded ease-in-out duration-300 hover:bg-secondary hover:text-blue',
         'small-blue': 'inline-block text-secondary font-medium text-lg text-center bg-blue p-3  min-w-[250px] rounded ease-in-out duration-300 hover:bg-secondary hover:text-blue',
-        'small-grey': 'inline-block text-primary font-medium text-lg text-center bg-secondary p-3 min-w-[250px] rounded ease-in-out duration-300 hover:bg-blue hover:text-secondary'
+        'small-grey': 'inline-block text-primary font-medium text-lg text-center bg-secondary p-3 min-w-[250px] rounded ease-in-out duration-300 hover:bg-blue hover:text-secondary',
+        'disabled': 'inline-block text-primary font-medium text-lg text-center bg-secondary p-3 min-w-[250px] rounded'
     }
 
     if (href) {

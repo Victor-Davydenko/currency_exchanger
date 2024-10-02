@@ -5,6 +5,10 @@ import facebook from '../../../public/icons/facebook.svg'
 import instagram from '../../../public/icons/instagram.svg'
 import twitter from '../../../public/icons/twitter.svg'
 import youtube from '../../../public/icons/youtube.svg'
+import arrow_icon from '../../../public/icons/icon_arrows.svg'
+import arrow_down from '../../../public/icons/arrow_down.svg'
+import arrow from '../../../public/icons/arrow.svg'
+import calendar from '../../../public/icons/calendar_icon.svg'
 
 export const Icons = {
     login: loginIcon,
@@ -13,5 +17,9 @@ export const Icons = {
     facebook,
     instagram,
     twitter,
-    youtube
+    youtube,
+    arrow_icon,
+    arrow_down,
+    arrow,
+    calendar
 }
